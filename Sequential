@@ -1,0 +1,91 @@
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+#include <chrono>
+
+// Function to initialize a matrix with random values
+void initializeMatrix(int** matrix, int size) {
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            matrix[i][j] = rand() % 10; // Generates random values between 0 and 9
+        }
+    }
+}
+
+// Function to print a matrix
+void printMatrix(int** matrix, int size) {
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            std::cout << matrix[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+// Function to perform matrix multiplication
+void matrixMultiply(int** A, int** B, int** C, int size) {
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            C[i][j] = 0;
+            for (int k = 0; k < size; ++k) {
+                C[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
+}
+
+int main() {
+    auto start_time = std::chrono::high_resolution_clock::now();
+    // Set the seed for random number generation
+    srand(time(NULL));
+
+    // Set the size of the matrices
+    const int N = 3; // You can change the value of N as needed
+
+    // Dynamically allocate memory for matrices A, B, and C
+    int** A = new int*[N];
+    int** B = new int*[N];
+    int** C = new int*[N];
+
+    for (int i = 0; i < N; ++i) {
+        A[i] = new int[N];
+        B[i] = new int[N];
+        C[i] = new int[N];
+    }
+
+    // Initialize matrices A and B with random values
+    initializeMatrix(A, N);
+    initializeMatrix(B, N);
+    // Print matrices A and B
+    std::cout << "Matrix A:" << std::endl;
+    printMatrix(A, N);
+    std::cout << std::endl;
+
+    std::cout << "Matrix B:" << std::endl;
+    printMatrix(B, N);
+    std::cout << std::endl;
+
+    // Perform matrix multiplication
+    matrixMultiply(A, B, C, N);
+
+    // Print the result matrix C
+    std::cout << "Matrix C (Result of A * B):" << std::endl;
+    printMatrix(C, N);
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+
+    std::cout << "\nExecution time: " << duration.count() << " microseconds" << std::endl;
+    // Deallocate memory
+    for (int i = 0; i < N; ++i) {
+        delete[] A[i];
+        delete[] B[i];
+        delete[] C[i];
+    }
+
+    delete[] A;
+    delete[] B;
+    delete[] C;
+
+    return 0;
+}
